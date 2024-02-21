@@ -1,6 +1,6 @@
 const express = require('express');
 const authenticateUser = require('../middleware/authmiddleware');
-const { register, login, forgetPassword, logout } = require('../controllers/Usercontroller');
+const { register, login, forgetPassword, logout, createInquiry, getAllInquiries } = require('../controllers/Usercontroller');
 const { addProduct,updateProductById,sortProductsByCategory,sortProductsByPrice,deleteProductById,getAllProductsWithPagination, getProductById } = require('../controllers/ProductController');
 const { newPayment, checkStatus } = require('../controllers/PaymentController');
 const { createOrder } = require('../controllers/Ordercontroller');
@@ -17,6 +17,13 @@ router.post('/forget-password',forgetPassword);
 
 // Logout
 router.post('/logout', authenticateUser,logout);
+
+
+// Route to create a new inquiry
+router.post('/inquiries', createInquiry);
+
+// Route to get all inquiries sorted by created date
+router.get('/inquiries', getAllInquiries);
 
 // =========================================================
 router.post('/add-product', addProduct);

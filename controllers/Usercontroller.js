@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require("../models/user.model");
+const Inquiry = require('../models/Contact.model'); // Adjust the path based on your project structure
 
 // Register
 exports.register = async (req, res) => {
@@ -151,3 +152,59 @@ exports.logout = (req, res) => {
         message: 'Logout successful',
     });
 };
+
+
+
+
+// Controller to handle the creation of a new inquiry
+exports.createInquiry = async (req, res) => {
+  try {
+    const { YourName, Number, YourProduct, YourSuitableTime, Email } = req.body;
+
+    // Validate required fields
+    if (!YourName || !Number || !YourProduct || !YourSuitableTime || !Email) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    // Create a new inquiry instance
+    const newInquiry = new Inquiry({
+      YourName,
+      Number,
+      YourProduct,
+      YourSuitableTime,
+      Email,
+    });
+
+    // Save the inquiry to the database
+    const savedInquiry = await newInquiry.save();
+
+    return res.status(201).json({
+      success: true,
+      inquiry: savedInquiry,
+    });
+  } catch (error) {
+    console.error('Error creating inquiry:', error);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+    });
+  }
+};
+
+// Controller to get all inquiries sorted by created date
+exports.getAllInquiries = async (req, res) => {
+    try {
+      // Retrieve all inquiries from the database and sort by the created date in descending order
+      const inquiries = await Inquiry.find().sort({ created: -1 });
+  
+      return res.status(200).json({
+        success: true,
+        inquiries,
+      });
+    } catch (error) {
+      console.error('Error getting inquiries:', error);
+      return res.status(500).json({
+        error: 'Internal Server Error',
+      });
+    }
+  };
+  
