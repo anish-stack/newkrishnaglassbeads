@@ -43,7 +43,7 @@ exports.createOrder = async (req, res) => {
 
 
 //Show My Orders
-exports.checkMyOrder = async()=>{
+exports.checkMyOrder = async(req,res)=>{
     try {
         const userId = req.user._id
         const orders = await Order.find({ user :userId }).sort('-createdAt');  // - createdAt will sort by date in descending order

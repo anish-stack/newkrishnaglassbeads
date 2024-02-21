@@ -3,7 +3,7 @@ const authenticateUser = require('../middleware/authmiddleware');
 const { register, login, forgetPassword, logout, createInquiry, getAllInquiries } = require('../controllers/Usercontroller');
 const { addProduct,updateProductById,sortProductsByCategory,sortProductsByPrice,deleteProductById,getAllProductsWithPagination, getProductById } = require('../controllers/ProductController');
 const { newPayment, checkStatus } = require('../controllers/PaymentController');
-const { createOrder } = require('../controllers/Ordercontroller');
+const { createOrder, checkMyOrder } = require('../controllers/Ordercontroller');
 const router = express.Router();
 
 // Register a new user
@@ -45,6 +45,8 @@ router.get('/get-product/:id', getProductById);
 
 // Get all products with pagination
 router.get('/get-all-products', getAllProductsWithPagination);
+router.get('/get-my-order',authenticateUser, checkMyOrder);
+
 router.post('/create-order', authenticateUser,createOrder);
 
 
