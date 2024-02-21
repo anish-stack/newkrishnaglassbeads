@@ -1,5 +1,6 @@
 const ProductModel = require('../models/product.model');
-
+const NodeCache = require('node-cache');
+const productCache = new NodeCache();
 // Add a new product
 exports.addProduct = async (req, res) => {
   try {
@@ -181,6 +182,19 @@ exports.getAllProductsWithPagination = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
 
+    // Create a unique cache key based on the request parameters
+    const cacheKey = `products:${page}:${limit}`;
+
+    // Try to get the data from the cache
+    const cachedData = productCache.get(cacheKey);
+    if (cachedData) {
+      return res.status(200).json({
+        status: true,
+        data: cachedData,
+        message: 'Data retrieved from cache',
+      });
+    }
+
     // Parse page and limit values to numbers
     const pageNumber = parseInt(page);
     const limitNumber = parseInt(limit);
@@ -191,9 +205,13 @@ exports.getAllProductsWithPagination = async (req, res) => {
     // Find all products with pagination
     const products = await ProductModel.find().skip(skip).limit(limitNumber);
 
+    // Save the data to the cache with a TTL of 2 hours (2 * 60 * 60 seconds)
+    productCache.set(cacheKey, products, 2 * 60 * 60);
+
     return res.status(200).json({
       status: true,
       data: products,
+      message: 'Data retrieved from the database',
     });
   } catch (error) {
     console.error(error);

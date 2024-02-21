@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser")
 const cors = require("cors")
 const ConnectDB = require('./config/Database')
 const userRoutes = require('./routes/routes')
+const Paymentrouter = require('./routes/PaymentRoutes')
 
 //configuration
 
@@ -24,6 +25,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/v1',userRoutes)
+app.use('/api/v2',Paymentrouter)
+
 
 // addpackage
 
